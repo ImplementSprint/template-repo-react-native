@@ -8,11 +8,17 @@ export function HomeScreen() {
   const { appName, environment } = getAppConfig();
 
   return (
-    <View style={styles.root}>
-      <Text style={styles.title}>{appName}</Text>
-      <Text style={styles.subtitle}>Single-root React Native boilerplate (TypeScript-first)</Text>
-      <View style={styles.badge}>
-        <Text style={styles.badgeText}>Environment: {environment}</Text>
+    <View style={styles.root} testID="home-screen-root">
+      <Text style={styles.title} testID="home-screen-title">
+        {appName}
+      </Text>
+      <Text style={styles.subtitle} testID="home-screen-subtitle">
+        Single-root React Native boilerplate (TypeScript-first)
+      </Text>
+      <View style={styles.badge} testID="home-screen-environment-badge">
+        <Text style={styles.badgeText} testID="home-screen-environment-text">
+          Environment: {environment}
+        </Text>
       </View>
     </View>
   );
