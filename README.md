@@ -1,97 +1,82 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Template Repo Mobile React Native
 
-# Getting Started
+Plain React Native + TypeScript template aligned with ImplementSprint mobile repository conventions.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Stack
 
-## Step 1: Start Metro
+- React Native CLI (bare workflow)
+- TypeScript strict mode
+- React Navigation (native stack)
+- Jest unit tests
+- Detox E2E scaffolding (Android + iOS)
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Quick Start
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+1. Install dependencies.
 
 ```sh
-# Using npm
+npm install
+```
+
+1. Start Metro.
+
+```sh
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
+1. Run Android app.
 
 ```sh
-# Using npm
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+1. Run iOS app (macOS only).
 
 ```sh
 bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+npm run pods
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Quality Gates
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```sh
+npm run lint
+npm run typecheck
+npm run test:unit
+npm run verify
+```
 
-## Step 3: Modify your app
+## E2E
 
-Now that you have successfully run the app, let's make changes!
+```sh
+npm run detox:build
+npm run detox:test
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+For iOS:
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+```sh
+npm run detox:build:ios
+npm run detox:test:ios
+```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+## Runtime Config
 
-## Congratulations! :tada:
+Copy `.env.example` to `.env` and adjust:
 
-You've successfully run and modified your React Native App. :partying_face:
+- `RN_PUBLIC_APP_NAME`
+- `RN_PUBLIC_APP_ENV`
+- `RN_PUBLIC_API_BASE_URL`
 
-### Now what?
+## Pipeline Caller
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+This repo includes [`.github/workflows/mobile-pipeline-caller.yml`](.github/workflows/mobile-pipeline-caller.yml).
 
-# Troubleshooting
+Set repository variable `MOBILE_SINGLE_SYSTEMS_JSON` with:
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+```json
+{ "name": "MyApp-Mobile", "dir": ".", "mobile_stack": "react-native" }
+```
 
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Use this value once central workflow routing includes `react-native` as a first-class stack.
