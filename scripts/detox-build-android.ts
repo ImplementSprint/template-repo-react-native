@@ -1,19 +1,23 @@
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const isWindows = process.platform === 'win32';
 const gradleWrapper = isWindows ? 'gradlew.bat' : './gradlew';
 const androidDir = join(process.cwd(), 'android');
-const gradlePropertiesPath = join(androidDir, 'gradle.properties');
 const gradleWrapperPath = join(androidDir, gradleWrapper);
 const debugApkDir = join(androidDir, 'app', 'build', 'outputs', 'apk', 'debug');
 const expectedDebugApkPath = join(debugApkDir, 'app-debug.apk');
-const kotlinVersion = '2.0.21';
 // Build only the app module artifacts Detox needs.
 // Running root-level assembleAndroidTest can trigger additional module
 // packaging outside app scope and is unnecessary for Detox binaries.
-const gradleTaskArgs = [':app:assembleDebug', ':app:assembleAndroidTest', '-DtestBuildType=debug'];
+// x86_64 only — CI emulators are x86_64; building all ABIs quadruples build time.
+const gradleTaskArgs = [
+  ':app:assembleDebug',
+  ':app:assembleAndroidTest',
+  '-DtestBuildType=debug',
+  '-PreactNativeArchitectures=x86_64',
+];
 
 function run(command: string, args: string[], cwd = process.cwd()): void {
   const result = spawnSync(command, args, {
@@ -79,47 +83,6 @@ function ensureExpectedDebugApk(): void {
   console.log(`Normalized debug APK for Detox: ${firstCandidate} -> app-debug.apk`);
 }
 
-function forceDebugBundling(): void {
-  const buildGradlePath = join(androidDir, 'app', 'build.gradle');
-  if (!existsSync(buildGradlePath)) {
-    return;
-  }
-
-  const content = readFileSync(buildGradlePath, 'utf8');
-  if (content.includes('debuggableVariants = []')) {
-    return;
-  }
-
-  const patched = content.replace(
-    /react\s*\{/,
-    'react {\n    // Force JS bundling in debug builds — no Metro server available in CI/Detox\n    debuggableVariants = []',
-  );
-
-  if (patched !== content) {
-    writeFileSync(buildGradlePath, patched, 'utf8');
-    console.log('Patched build.gradle: forced JS bundling in debug builds for Detox.');
-  }
-}
-
-function normalizeGradleProperties(): void {
-  if (!existsSync(gradlePropertiesPath)) {
-    return;
-  }
-
-  const raw = readFileSync(gradlePropertiesPath, 'utf8');
-  const normalizedLines = raw
-    .replaceAll('\r\n', '\n')
-    .split('\n')
-    .filter((line) => !line.startsWith('kotlinVersion='));
-
-  normalizedLines.push(`kotlinVersion=${kotlinVersion}`);
-
-  writeFileSync(gradlePropertiesPath, `${normalizedLines.join('\n').replace(/\n+$/u, '')}\n`, 'utf8');
-}
-
 ensureAndroidProjectExists();
-normalizeGradleProperties();
-forceDebugBundling();
-
 runGradleBuild();
 ensureExpectedDebugApk();
