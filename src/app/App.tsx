@@ -17,9 +17,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-});
