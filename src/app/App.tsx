@@ -1,10 +1,7 @@
 import { StyleSheet, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { enableScreens } from 'react-native-screens';
 
 import { RootNavigator } from '@navigation/RootNavigator';
-
-enableScreens();
 
 export default function App() {
   return (
@@ -14,6 +11,12 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});
 
 const styles = StyleSheet.create({
   root: {
