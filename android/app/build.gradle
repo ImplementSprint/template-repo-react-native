@@ -7,12 +7,6 @@ apply plugin: "com.facebook.react"
  * By default you don't need to apply any configuration, just uncomment the lines you need.
  */
 react {
-    // When building for Detox, JS must be bundled into the APK (no Metro server in CI).
-    // Pass -PdetoxBuild=true via Gradle to activate; normal dev builds keep Metro hot-reload.
-    if (project.hasProperty("detoxBuild")) {
-        debuggableVariants = []
-    }
-
     /* Folders */
     //   The root of your project, i.e. where "package.json" lives. Default is '../..'
     // root = file("../../")
@@ -90,8 +84,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        testBuildType "debug"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         debug {
@@ -118,7 +110,6 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    androidTestImplementation("com.wix.detox:detox:20.+")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
