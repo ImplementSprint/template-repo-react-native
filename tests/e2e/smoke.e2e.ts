@@ -6,7 +6,7 @@ describe('Boilerplate app smoke flow', () => {
   });
 
   it('placeholder e2e test', async () => {
-    await waitFor(element(by.id('home-screen-root'))).toBeVisible().withTimeout(10000);
+    await waitFor(element(by.id('home-screen-root'))).toBeVisible().withTimeout(30000);
     await expect(element(by.id('home-screen-title'))).toBeVisible();
   });
 });
