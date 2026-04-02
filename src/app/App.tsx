@@ -1,4 +1,4 @@
-import { StatusBar } from 'react-native';
+import { StyleSheet, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 
@@ -8,9 +8,15 @@ enableScreens();
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.root}>
       <StatusBar barStyle="dark-content" />
       <RootNavigator />
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});
