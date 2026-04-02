@@ -8,7 +8,7 @@ Plain React Native + TypeScript template aligned with ImplementSprint mobile rep
 - TypeScript strict mode
 - React Navigation (native stack)
 - Jest unit tests
-- Detox E2E scaffolding (Android + iOS)
+- Maestro E2E scaffolding (Android + iOS)
 
 ## Quick Start
 
@@ -33,7 +33,6 @@ npm run android
 1. Run iOS app (macOS only).
 
 ```sh
-bundle install
 npm run pods
 npm run ios
 ```
@@ -50,15 +49,14 @@ npm run verify
 ## E2E
 
 ```sh
-npm run detox:build
-npm run detox:test
+npm run maestro:validate
+npm run maestro:test:android
 ```
 
 For iOS:
 
 ```sh
-npm run detox:build:ios
-npm run detox:test:ios
+npm run maestro:test:ios
 ```
 
 ## Runtime Config

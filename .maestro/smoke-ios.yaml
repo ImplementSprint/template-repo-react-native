@@ -1,0 +1,10 @@
+appId: org.reactjs.native.example.templaterepomobilereactnative
+---
+- launchApp:
+    clearState: true
+- assertVisible:
+    id: home-screen-title
+- tapOn:
+    id: home-screen-title
+- assertVisible:
+    id: home-screen-environment-badge
