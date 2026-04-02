@@ -17,6 +17,7 @@ const gradleTaskArgs = [
   ':app:assembleAndroidTest',
   '-DtestBuildType=debug',
   '-PreactNativeArchitectures=x86_64',
+  '-PdetoxBuild=true',
 ];
 
 function run(command: string, args: string[], cwd = process.cwd()): void {
