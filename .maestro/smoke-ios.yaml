@@ -1,4 +1,6 @@
 appId: org.reactjs.native.example.templaterepomobilereactnative
+tags:
+    - ios
 ---
 - launchApp:
     clearState: true
