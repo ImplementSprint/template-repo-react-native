@@ -1,5 +1,6 @@
 appId: org.reactjs.native.example.templaterepomobilereactnative
 tags:
+    - smoke
     - ios
 ---
 - launchApp:

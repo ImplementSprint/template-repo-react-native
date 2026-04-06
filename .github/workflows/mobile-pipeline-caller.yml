@@ -39,12 +39,19 @@ on:
     branches: [test, uat, main]
   pull_request:
     branches: [test, uat, main]
+  schedule:
+    - cron: "0 2 * * *"
   workflow_dispatch:
     inputs:
       pipeline_mode:
         description: "Pipeline mode (auto|single|multi)"
         type: choice
         options: [auto, single, multi]
+        default: auto
+      maestro_e2e_tier:
+        description: "Override Maestro execution tier"
+        type: choice
+        options: [auto, skip, smoke, full]
         default: auto
       enable_lint:
         description: "Run lint checks"
@@ -113,10 +120,11 @@ jobs:
       enable_governance: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_governance || 'true') || true }}
       enable_maestro: true
       enable_maestro_ios: true
-      maestro_test_command_full: "maestro test .maestro --exclude-tags ios"
-      maestro_test_command_smoke: "maestro test .maestro/smoke-android.yaml"
-      maestro_ios_test_command_full: "maestro test .maestro --exclude-tags android"
-      maestro_ios_test_command_smoke: "maestro test .maestro/smoke-ios.yaml"
+      maestro_e2e_tier: ${{ github.event_name == 'schedule' && 'full' || github.event_name == 'workflow_dispatch' && github.event.inputs.maestro_e2e_tier || 'auto' }}
+      maestro_test_command_full: "npm run maestro:test:android:full"
+      maestro_test_command_smoke: "npm run maestro:test:android:smoke"
+      maestro_ios_test_command_full: "npm run maestro:test:ios:full"
+      maestro_ios_test_command_smoke: "npm run maestro:test:ios:smoke"
       enable_grafana_k6: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_grafana_k6 || 'false') || false }}
       k6_script_path: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_script_path || 'tests/performance' }}
       k6_base_url: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_base_url || '' }}

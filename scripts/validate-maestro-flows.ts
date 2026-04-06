@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 
 function collectFlowFiles(rootDir: string): string[] {
@@ -44,9 +44,46 @@ function main(): void {
     process.exit(1);
   }
 
+  const validationErrors: string[] = [];
+
   console.log(`Found ${flowFiles.length} Maestro flow file(s):`);
   for (const flowFile of flowFiles) {
-    console.log(`- ${relative(process.cwd(), flowFile)}`);
+    const relativePath = relative(process.cwd(), flowFile);
+    const flowText = readFileSync(flowFile, 'utf8');
+    const headerText = flowText.split(/^---\s*$/m, 1)[0] ?? flowText;
+    const appIdMatch = headerText.match(/^\s*appId:\s*(\S+)/m);
+    const tagsMatch = headerText.match(/^\s*tags:\s*\r?\n((?:\s*-\s*[^\r\n]+\r?\n?)*)/m);
+    const tags =
+      tagsMatch?.[1]
+        ?.split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith('- '))
+        .map((line) => line.slice(2).trim()) ?? [];
+
+    if (!appIdMatch) {
+      validationErrors.push(`${relativePath}: missing appId in flow header.`);
+    }
+
+    if (!tags.includes('android') && !tags.includes('ios')) {
+      validationErrors.push(`${relativePath}: missing platform tag (android or ios).`);
+    }
+
+    if (!tags.includes('smoke') && !tags.includes('regression')) {
+      validationErrors.push(`${relativePath}: missing execution-tier tag (smoke or regression).`);
+    }
+
+    console.log(`- ${relativePath}`);
+    if (tags.length > 0) {
+      console.log(`  tags: ${tags.join(', ')}`);
+    }
+  }
+
+  if (validationErrors.length > 0) {
+    console.error('Maestro flow validation failed:');
+    for (const validationError of validationErrors) {
+      console.error(`- ${validationError}`);
+    }
+    process.exit(1);
   }
 }
 
