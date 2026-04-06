@@ -18,8 +18,8 @@
 # mobile_stack supported values: expo | react-native | kotlin
 #
 # Optional overrides (showing defaults):
-#   enable_android_build: true   — Local Android app build for Detox (debug APK)
-#   enable_ios_build: true       — Local iOS simulator app build for Detox (.app)
+#   enable_android_build: true   — Local Android app build for Maestro (debug APK)
+#   enable_ios_build: true       — Local iOS simulator app build for Maestro (.app)
 #   enable_lint: true
 #   enable_security_scan: true
 #   enable_governance: true
@@ -28,8 +28,8 @@
 # Expo systems must be TypeScript-based:
 #   tsconfig.json + strict mode
 # Builds are local (xcodebuild / Gradle) — no EAS or EXPO_TOKEN needed.
-# Detox E2E tests consume build artifacts from the build stage.
-# SonarCloud runs once at the master mobile pipeline level, and Detox
+# Maestro E2E tests consume build artifacts from the build stage.
+# SonarCloud runs once at the master mobile pipeline level, and Maestro
 # runs by default for Expo and React Native systems.
 # ──────────────────────────────────────────────────────────────
 name: "Master Pipeline — Mobile"
@@ -111,6 +111,8 @@ jobs:
       enable_security_scan: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_security_scan || 'true') || true }}
       enable_sonar: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_sonar || 'true') || true }}
       enable_governance: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_governance || 'true') || true }}
+      enable_maestro: false
+      enable_maestro_ios: false
       enable_grafana_k6: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_grafana_k6 || 'false') || false }}
       k6_script_path: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_script_path || 'tests/performance' }}
       k6_base_url: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_base_url || '' }}
