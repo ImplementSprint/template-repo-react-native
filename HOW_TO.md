@@ -9,6 +9,14 @@ This guide explains:
 
 ## 1) Start From Template
 
+Before running Android locally on Windows, ensure native prerequisites are installed:
+
+- Node.js 20+
+- JDK 17
+- Android Studio with SDK Platform 36, Build-Tools 36, Platform-Tools, and Emulator
+- `ANDROID_HOME` / `ANDROID_SDK_ROOT` pointing to your Android SDK path
+- `platform-tools` on `PATH` so `adb` is available
+
 1. Install dependencies:
 
 ```sh
@@ -41,6 +49,15 @@ npm run pods
 npm run ios
 ```
 
+5. Verify environment health:
+
+```sh
+npx react-native doctor
+adb --version
+```
+
+If `doctor` reports `adb` missing, `ANDROID_HOME` missing, or Android SDK 36 missing, fix those before app execution.
+
 ## 2) CI/CD Setup (Required Once Per Repo)
 
 This template uses the workflow caller in `.github/workflows/mobile-pipeline-caller.yml`, which calls the central reusable mobile pipeline.
@@ -50,6 +67,20 @@ Set repository variable `MOBILE_SINGLE_SYSTEMS_JSON`:
 ```json
 { "name": "MyApp-Mobile", "dir": ".", "mobile_stack": "react-native" }
 ```
+
+Optional explicit flags:
+
+```json
+{
+   "name": "MyApp-Mobile",
+   "dir": ".",
+   "mobile_stack": "react-native",
+   "enable_android_build": true,
+   "enable_ios_build": true
+}
+```
+
+These two flags default to `true` in the central workflow, so you do not need to set them unless you want to disable one of the builds.
 
 Pipeline triggers run on:
 
@@ -175,3 +206,28 @@ If all commands pass locally, CI failure risk is much lower.
 - Coverage dropped below threshold
 - `.maestro/` was removed or has no flow files
 - `MOBILE_SINGLE_SYSTEMS_JSON` was missing or had wrong `mobile_stack`
+
+## 8) Windows Troubleshooting Quick Fixes
+
+### `adb` is not recognized
+
+- Add `<Android SDK>\\platform-tools` to `PATH`
+- Restart terminal and run `adb --version`
+
+### `ANDROID_HOME` / `ANDROID_SDK_ROOT` missing
+
+- Set both variables to your SDK root (commonly `C:\\Users\\<you>\\AppData\\Local\\Android\\Sdk`)
+- Restart terminal and rerun `npx react-native doctor`
+
+### Android SDK version not found
+
+- Open Android Studio SDK Manager and install:
+   - Android SDK Platform 36
+   - Android SDK Build-Tools 36
+   - Android SDK Platform-Tools
+
+### Emulator or device not detected
+
+- Start an emulator from Android Studio Device Manager
+- Or connect a physical device with USB debugging enabled
+- Verify with `adb devices`
