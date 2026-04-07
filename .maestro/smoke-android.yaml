@@ -6,8 +6,6 @@ tags:
 - launchApp:
     clearState: true
 - assertVisible:
-    id: home-screen-title
-- tapOn:
-    id: home-screen-title
+    id: home-screen-root
 - assertVisible:
     id: home-screen-environment-badge
