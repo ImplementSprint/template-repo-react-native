@@ -1,0 +1,12 @@
+appId: com.templaterepomobilereactnative
+tags:
+  - ios
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      text: "Single-root React Native boilerplate (TypeScript-first)"
+    timeout: 120000
+- assertVisible:
+    text: "Single-root React Native boilerplate (TypeScript-first)"

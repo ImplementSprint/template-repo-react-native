@@ -8,7 +8,8 @@ Plain React Native + TypeScript template aligned with ImplementSprint mobile rep
 - TypeScript strict mode
 - React Navigation (native stack)
 - Jest unit tests
-- Detox E2E scaffolding (Android + iOS)
+- Maestro E2E scaffolding (Android + iOS)
+- Detox E2E scripts (optional)
 
 ## Quick Start
 
@@ -49,6 +50,22 @@ npm run verify
 
 ## E2E
 
+Primary E2E path (Maestro):
+
+```sh
+npm run maestro:validate
+npm run maestro:test
+```
+
+Platform-specific Maestro commands:
+
+```sh
+npm run maestro:test:android
+npm run maestro:test:ios
+```
+
+Optional E2E path (Detox):
+
 ```sh
 npm run detox:build
 npm run detox:test
@@ -79,4 +96,4 @@ Set repository variable `MOBILE_SINGLE_SYSTEMS_JSON` with:
 { "name": "MyApp-Mobile", "dir": ".", "mobile_stack": "react-native" }
 ```
 
-Use this value once central workflow routing includes `react-native` as a first-class stack.
+The central workflow already supports `react-native` as a first-class stack and runs Maestro when enabled.
