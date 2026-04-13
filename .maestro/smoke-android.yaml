@@ -1,12 +1,12 @@
 appId: com.templaterepomobilereactnative
 tags:
-  - android
+    - android
 ---
 - launchApp:
     clearState: true
-- extendedWaitUntil:
-    visible:
-      text: "Single-root React Native boilerplate (TypeScript-first)"
-    timeout: 120000
 - assertVisible:
-    text: "Single-root React Native boilerplate (TypeScript-first)"
+    id: home-screen-title
+- tapOn:
+    id: home-screen-title
+- assertVisible:
+    id: home-screen-environment-badge

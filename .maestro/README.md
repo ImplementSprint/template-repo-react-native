@@ -1,8 +1,15 @@
-# Maestro Flows
+# Maestro Starter Flows
 
-These baseline flows are used by centralized CI in `central-workflow`.
+This template ships with platform-specific smoke flows:
 
-Commands:
-- `maestro test .maestro`
-- `maestro test .maestro --exclude-tags ios`
-- `maestro test .maestro --exclude-tags android`
+- smoke-android.yaml
+- smoke-ios.yaml
+
+Before first release, update appId values when you change package identifiers.
+
+Run flows:
+
+```sh
+maestro test .maestro/smoke-android.yaml
+maestro test .maestro/smoke-ios.yaml
+```
