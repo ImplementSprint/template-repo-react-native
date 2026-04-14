@@ -2,5 +2,6 @@
 appId: com.templaterepomobilereactnative
 tags:
     - android
+---
 - launchApp:
     clearState: true
