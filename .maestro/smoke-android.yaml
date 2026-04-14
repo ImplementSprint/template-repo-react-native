@@ -4,4 +4,9 @@ tags:
 ---
 - launchApp:
     clearState: true
-- assertVisible: "Template Repo Mobile React Native"
+- extendedWaitUntil:
+    visible:
+      text: "Single-root React Native boilerplate (TypeScript-first)"
+    timeout: 120000
+- assertVisible:
+    text: "Single-root React Native boilerplate (TypeScript-first)"
