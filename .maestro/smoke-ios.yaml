@@ -4,4 +4,4 @@ tags:
 ---
 - launchApp:
     clearState: true
-- assertVisible: "Single-root React Native boilerplate (TypeScript-first)"
+- assertVisible: "Template Repo Mobile React Native"
