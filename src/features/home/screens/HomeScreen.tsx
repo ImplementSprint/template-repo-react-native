@@ -20,6 +20,14 @@ export function HomeScreen() {
           Environment: {environment}
         </Text>
       </View>
+      <Text
+        style={styles.smokeMarker}
+        testID="maestro-smoke-ready"
+        accessibilityLabel="maestro-smoke-ready"
+        accessible={true}
+      >
+        MAESTRO_SMOKE_READY
+      </Text>
     </View>
   );
 }
@@ -56,5 +64,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.text,
     fontWeight: '500',
+  },
+  smokeMarker: {
+    fontSize: 12,
+    color: colors.muted,
+    textAlign: 'center',
   },
 });
