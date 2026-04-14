@@ -9,6 +9,14 @@ This guide explains:
 
 ## 1) Start From Template
 
+Before running Android locally on Windows, ensure native prerequisites are installed:
+
+- Node.js 20+
+- JDK 17
+- Android Studio with SDK Platform 36, Build-Tools 36, Platform-Tools, and Emulator
+- `ANDROID_HOME` / `ANDROID_SDK_ROOT` pointing to your Android SDK path
+- `platform-tools` on `PATH` so `adb` is available
+
 1. Install dependencies:
 
 ```sh
@@ -37,10 +45,18 @@ Copy-Item .env.example .env
 npm start
 npm run android
 # macOS only:
-bundle install
 npm run pods
 npm run ios
 ```
+
+5. Verify environment health:
+
+```sh
+npx react-native doctor
+adb --version
+```
+
+If `doctor` reports `adb` missing, `ANDROID_HOME` missing, or Android SDK 36 missing, fix those before app execution.
 
 ## 2) CI/CD Setup (Required Once Per Repo)
 
@@ -51,6 +67,20 @@ Set repository variable `MOBILE_SINGLE_SYSTEMS_JSON`:
 ```json
 { "name": "MyApp-Mobile", "dir": ".", "mobile_stack": "react-native" }
 ```
+
+Optional explicit flags:
+
+```json
+{
+   "name": "MyApp-Mobile",
+   "dir": ".",
+   "mobile_stack": "react-native",
+   "enable_android_build": true,
+   "enable_ios_build": true
+}
+```
+
+These two flags default to `true` in the central workflow, so you do not need to set them unless you want to disable one of the builds.
 
 Pipeline triggers run on:
 
@@ -68,7 +98,7 @@ Use this structure for day-to-day feature work:
 - `src/utils/`: shared utility functions
 - `src/app/`: top-level app composition
 - `tests/unit/`: Jest unit tests (`*.test.ts` / `*.test.tsx`)
-- `tests/e2e/`: Detox tests (`*.e2e.ts`)
+- `.maestro/`: Maestro flow files (`*.yaml` / `*.yml`)
 
 Recommended workflow:
 
@@ -105,16 +135,16 @@ Use `.ts` and `.tsx` for app code.
 - Do not delete `.github/workflows/mobile-pipeline-caller.yml`
 - Keep repository variable name `MOBILE_SINGLE_SYSTEMS_JSON` (or correctly configured `MOBILE_MULTI_SYSTEMS_JSON`)
 - Keep `mobile_stack` set to `react-native` for this template system
-- Keep the `postinstall` script that runs `scripts/ensure-detox-jest-compat.ts`
+- Keep `.maestro/` in the repository with at least one flow file
 
-### Detox and build contracts
+### Maestro and build contracts
 
-By default, the reusable workflow runs Detox with:
+By default, the reusable workflow runs Maestro with:
 
-- Android: `npx detox build -c android.emu.debug` then `npx detox test -c android.emu.debug --headless`
-- iOS: `npx detox build -c ios.sim.debug` then `npx detox test -c ios.sim.debug --cleanup`
+- Android: `maestro test .maestro/smoke-android.yaml`
+- iOS: `maestro test .maestro/smoke-ios.yaml`
 
-If you change Detox configuration names or commands, update system JSON overrides in CI so the pipeline uses your new commands.
+If you rename or relocate flow files, update package scripts and CI command overrides together.
 
 ## 5) Tests Required By CI/CD
 
@@ -129,8 +159,8 @@ The React Native lane uses this order:
    - Android build (`.apk`)
    - iOS simulator build (`.app` zipped artifact)
 3. Stage 3 E2E (after each build succeeds):
-   - Detox Android E2E
-   - Detox iOS E2E
+   - Maestro Android E2E
+   - Maestro iOS E2E
 
 ### Unit tests
 
@@ -149,11 +179,11 @@ The React Native lane uses this order:
 - `test` branch is relaxed for HIGH findings
 - `uat` and `main` enforce HIGH/CRITICAL failure gates
 
-### Detox E2E
+### Maestro E2E
 
-- Keep at least one reliable smoke test in `tests/e2e`
+- Keep at least one reliable smoke flow in `.maestro/`
 - Prefer stable `testID` selectors in UI components
-- Ensure Detox config remains valid in `package.json` and `tests/e2e/jest.config.ts`
+- Ensure `.maestro/` includes valid YAML flow files
 
 ## 6) Local Pre-PR Checklist
 
@@ -161,11 +191,10 @@ Run this before creating a PR:
 
 ```sh
 npm run verify
-npm run detox:build
-npm run detox:test
+npm run maestro:validate
+npm run maestro:test:android
 # optional but recommended if you develop on macOS:
-npm run detox:build:ios
-npm run detox:test:ios
+npm run maestro:test:ios
 ```
 
 If all commands pass locally, CI failure risk is much lower.
@@ -175,5 +204,30 @@ If all commands pass locally, CI failure risk is much lower.
 - `tsconfig` strict mode was disabled
 - JS/JSX source files were added to app source folders
 - Coverage dropped below threshold
-- Detox configuration names were changed without matching CI overrides
+- `.maestro/` was removed or has no flow files
 - `MOBILE_SINGLE_SYSTEMS_JSON` was missing or had wrong `mobile_stack`
+
+## 8) Windows Troubleshooting Quick Fixes
+
+### `adb` is not recognized
+
+- Add `<Android SDK>\\platform-tools` to `PATH`
+- Restart terminal and run `adb --version`
+
+### `ANDROID_HOME` / `ANDROID_SDK_ROOT` missing
+
+- Set both variables to your SDK root (commonly `C:\\Users\\<you>\\AppData\\Local\\Android\\Sdk`)
+- Restart terminal and rerun `npx react-native doctor`
+
+### Android SDK version not found
+
+- Open Android Studio SDK Manager and install:
+   - Android SDK Platform 36
+   - Android SDK Build-Tools 36
+   - Android SDK Platform-Tools
+
+### Emulator or device not detected
+
+- Start an emulator from Android Studio Device Manager
+- Or connect a physical device with USB debugging enabled
+- Verify with `adb devices`
